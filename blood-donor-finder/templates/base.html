@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="LifeLine – Blood Donor Finder. Connecting blood donors with those in need across your community."/>
+  <title>{% block title %}LifeLine – Blood Donor Finder{% endblock %}</title>
+
+  <!-- Favicon: blood drop SVG -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M16 2 C16 2 4 14 4 20 a12 12 0 0 0 24 0 C28 14 16 2 16 2z' fill='%23A61B29'/></svg>"/>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+  {% block head_extra %}{% endblock %}
+</head>
+<body>
+  <!-- ── Navigation ── -->
+  <header class="site-header">
+    <nav class="nav container">
+      <a class="nav__brand" href="{{ url_for('index') }}">
+        <svg class="nav__logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M16 2 C16 2 4 14 4 20 a12 12 0 0 0 24 0 C28 14 16 2 16 2z" fill="currentColor"/>
+        </svg>
+        LifeLine
+      </a>
+
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navMenu">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul class="nav__menu" id="navMenu" role="list">
+        <li><a href="{{ url_for('index') }}" class="nav__link {% if request.endpoint=='index' %}nav__link--active{% endif %}">Home</a></li>
+        <li><a href="{{ url_for('register') }}" class="nav__link {% if request.endpoint=='register' %}nav__link--active{% endif %}">Register as Donor</a></li>
+        <li><a href="{{ url_for('request_blood') }}" class="nav__link {% if request.endpoint=='request_blood' %}nav__link--active{% endif %}">Request Blood</a></li>
+        <li><a href="{{ url_for('search') }}" class="nav__link {% if request.endpoint=='search' %}nav__link--active{% endif %}">Find Donors</a></li>
+        <li><a href="{{ url_for('campaigns') }}" class="nav__link {% if request.endpoint=='campaigns' %}nav__link--active{% endif %}">Campaigns</a></li>
+        <li><a href="{{ url_for('about') }}" class="nav__link {% if request.endpoint=='about' %}nav__link--active{% endif %}">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- ── Flash Messages ── -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-container container" role="alert" aria-live="polite">
+        {% for category, message in messages %}
+          <div class="flash flash--{{ category }}">
+            <span>{{ message }}</span>
+            <button class="flash__close" aria-label="Dismiss">&times;</button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- ── Main Content ── -->
+  <main id="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ── Footer ── -->
+  <footer class="site-footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <svg class="footer__logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M16 2 C16 2 4 14 4 20 a12 12 0 0 0 24 0 C28 14 16 2 16 2z" fill="currentColor"/>
+        </svg>
+        <span>LifeLine</span>
+      </div>
+      <nav class="footer__links" aria-label="Footer navigation">
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('campaigns') }}">Campaigns</a>
+        <a href="{{ url_for('survey') }}">Survey</a>
+        <a href="{{ url_for('feedback') }}">Feedback</a>
+        <a href="{{ url_for('about') }}">About</a>
+        <a href="{{ url_for('admin_login') }}">Admin</a>
+      </nav>
+      <p class="footer__disclaimer">
+        <strong>Important:</strong> LifeLine is a community connection platform only. It does <em>not</em>
+        perform medical screening, compatibility testing, or clinical assessments. All blood compatibility
+        and eligibility decisions must be confirmed by authorised healthcare professionals and licensed
+        blood banks. Always consult a medical professional before donating or accepting blood.
+      </p>
+      <p class="footer__copy">© {{ 2025 }} LifeLine &mdash; SPPU SE AI&DS Community Engagement Project</p>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

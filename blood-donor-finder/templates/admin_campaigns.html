@@ -1,0 +1,95 @@
+{% extends "admin_base.html" %}
+{% block title %}Campaigns – LifeLine Admin{% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+  <h1 class="admin-page-title">Campaign Management</h1>
+</div>
+
+<!-- Add Form -->
+<section class="admin-form-section">
+  <h2 class="admin-section-title">Add New Campaign</h2>
+  {% if errors %}
+  <div class="error-box" role="alert">
+    <ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul>
+  </div>
+  {% endif %}
+  <form method="POST" action="{{ url_for('admin_campaigns') }}" class="admin-add-form">
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" for="title">Title <span class="required">*</span></label>
+        <input class="form-input" type="text" id="title" name="title" required/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="campaign_date">Date <span class="required">*</span></label>
+        <input class="form-input" type="date" id="campaign_date" name="campaign_date" required/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="description">Description</label>
+      <textarea class="form-textarea" id="description" name="description" rows="2"></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" for="location">Location <span class="required">*</span></label>
+        <input class="form-input" type="text" id="location" name="location" required/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="organizer">Organizer <span class="required">*</span></label>
+        <input class="form-input" type="text" id="organizer" name="organizer" required/>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" for="expected_donors">Expected Donors</label>
+        <input class="form-input" type="number" id="expected_donors" name="expected_donors" min="0" value="0"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="actual_donors">Actual Donors</label>
+        <input class="form-input" type="number" id="actual_donors" name="actual_donors" min="0" value="0"/>
+      </div>
+    </div>
+    <button type="submit" class="btn btn--primary">Add Campaign</button>
+  </form>
+</section>
+
+<!-- List -->
+<section class="admin-table-section">
+  <h2 class="admin-section-title">All Campaigns</h2>
+  <div class="table-wrapper">
+    <table class="admin-table">
+      <thead>
+        <tr><th>#</th><th>Title</th><th>Date</th><th>Location</th><th>Organizer</th><th>Expected</th><th>Actual</th><th>Status</th><th>Action</th></tr>
+      </thead>
+      <tbody>
+        {% for c in campaigns %}
+        <tr>
+          <td class="mono">{{ c.id }}</td>
+          <td>{{ c.title }}</td>
+          <td class="mono">{{ c.campaign_date.strftime('%d %b %Y') if c.campaign_date }}</td>
+          <td>{{ c.location }}</td>
+          <td>{{ c.organizer }}</td>
+          <td>{{ c.expected_donors }}</td>
+          <td>{{ c.actual_donors }}</td>
+          <td>
+            {% if c.campaign_date >= today %}
+              <span class="badge badge--info">Upcoming</span>
+            {% else %}
+              <span class="badge badge--neutral">Completed</span>
+            {% endif %}
+          </td>
+          <td>
+            <form method="POST" action="{{ url_for('admin_delete_campaign', camp_id=c.id) }}" class="inline-form"
+                  data-confirm="Delete campaign '{{ c.title }}'?">
+              <button type="submit" class="btn btn--danger btn--sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="9" class="table-empty">No campaigns yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

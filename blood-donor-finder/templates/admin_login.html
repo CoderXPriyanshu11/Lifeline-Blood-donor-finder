@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Login – LifeLine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Fraunces:wght@700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+</head>
+<body class="admin-login-body">
+  <div class="admin-login-wrapper">
+    <div class="admin-login-card">
+      <div class="admin-login-card__brand">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="40" height="40" aria-hidden="true">
+          <path d="M16 2 C16 2 4 14 4 20 a12 12 0 0 0 24 0 C28 14 16 2 16 2z" fill="#A61B29"/>
+        </svg>
+        <span class="admin-login-card__name">LifeLine</span>
+        <span class="admin-login-card__sub">Administration Panel</span>
+      </div>
+
+      {% if error %}
+      <div class="flash flash--danger" role="alert">{{ error }}</div>
+      {% endif %}
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="flash flash--{{ category }}" role="alert">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" action="{{ url_for('admin_login') }}" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="username">Username</label>
+          <input class="form-input" type="text" id="username" name="username"
+                 autocomplete="username" autofocus required placeholder="admin"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input class="form-input" type="password" id="password" name="password"
+                 autocomplete="current-password" required/>
+        </div>
+        <button type="submit" class="btn btn--primary btn--full btn--lg">Sign In</button>
+      </form>
+
+      <a href="{{ url_for('index') }}" class="admin-login-card__back">← Back to public site</a>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

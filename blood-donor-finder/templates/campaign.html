@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Campaigns – LifeLine{% endblock %}
+
+{% block content %}
+<section class="page-hero page-hero--sm">
+  <div class="container">
+    <p class="eyebrow">Community Outreach</p>
+    <h1 class="page-hero__title">Awareness &amp; Donation Campaigns</h1>
+    <p class="page-hero__sub">Blood donation drives and awareness events organised by LifeLine in partnership with blood banks and volunteers.</p>
+  </div>
+</section>
+
+<div class="container section">
+  {% if campaigns|length == 0 %}
+  <div class="empty-state">
+    <p class="empty-state__icon" aria-hidden="true">📅</p>
+    <h2 class="empty-state__title">No campaigns yet</h2>
+    <p>Check back soon for upcoming donation drives.</p>
+  </div>
+  {% else %}
+
+  <!-- Upcoming -->
+  {% set upcoming = [] %}
+  {% set past = [] %}
+  {% for c in campaigns %}
+    {% if c.campaign_date >= today %}
+      {% set _ = upcoming.append(c) %}
+    {% else %}
+      {% set _ = past.append(c) %}
+    {% endif %}
+  {% endfor %}
+
+  {% if upcoming %}
+  <h2 class="section__subheading">Upcoming Campaigns</h2>
+  <div class="card-grid">
+    {% for camp in upcoming %}
+    <article class="card card--campaign">
+      <div class="card__head">
+        <span class="badge badge--info">Upcoming</span>
+        <time class="card__date" datetime="{{ camp.campaign_date }}">
+          {{ camp.campaign_date.strftime('%d %b %Y') if camp.campaign_date }}
+        </time>
+      </div>
+      <h3 class="card__title">{{ camp.title }}</h3>
+      <p class="card__meta">📍 {{ camp.location }}</p>
+      <p class="card__meta">🏢 Organised by: {{ camp.organizer }}</p>
+      {% if camp.expected_donors %}
+        <p class="card__meta">👥 Expected donors: {{ camp.expected_donors }}</p>
+      {% endif %}
+      {% if camp.description %}
+        <p class="card__body">{{ camp.description }}</p>
+      {% endif %}
+    </article>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if past %}
+  <h2 class="section__subheading mt-3">Past Campaigns</h2>
+  <div class="card-grid">
+    {% for camp in past %}
+    <article class="card card--campaign card--past">
+      <div class="card__head">
+        <span class="badge badge--neutral">Completed</span>
+        <time class="card__date" datetime="{{ camp.campaign_date }}">
+          {{ camp.campaign_date.strftime('%d %b %Y') if camp.campaign_date }}
+        </time>
+      </div>
+      <h3 class="card__title">{{ camp.title }}</h3>
+      <p class="card__meta">📍 {{ camp.location }}</p>
+      <p class="card__meta">🏢 Organised by: {{ camp.organizer }}</p>
+      {% if camp.actual_donors %}
+        <p class="card__meta turnout">
+          ✅ <strong>{{ camp.actual_donors }}</strong> donors participated
+          {% if camp.expected_donors %}({{ ((camp.actual_donors / camp.expected_donors) * 100) | round(0) | int }}% of target){% endif %}
+        </p>
+      {% endif %}
+      {% if camp.description %}
+        <p class="card__body">{{ camp.description }}</p>
+      {% endif %}
+    </article>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% endif %}
+
+  <div class="cta-inline">
+    <p>Want to organise a blood donation camp?</p>
+    <a href="{{ url_for('feedback') }}" class="btn btn--outline">Contact Us via Feedback</a>
+  </div>
+</div>
+{% endblock %}

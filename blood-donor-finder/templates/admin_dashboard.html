@@ -1,0 +1,197 @@
+{% extends "admin_base.html" %}
+{% block title %}Dashboard – LifeLine Admin{% endblock %}
+
+{% block head_extra %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+  <h1 class="admin-page-title">Dashboard</h1>
+  <p class="admin-page-sub">Platform overview and analytics</p>
+</div>
+
+<!-- KPI Cards -->
+<div class="kpi-grid">
+  <div class="kpi-card kpi-card--red">
+    <span class="kpi-card__value">{{ kpi.total_donors or 0 }}</span>
+    <span class="kpi-card__label">Total Donors</span>
+  </div>
+  <div class="kpi-card kpi-card--green">
+    <span class="kpi-card__value">{{ kpi.available_donors or 0 }}</span>
+    <span class="kpi-card__label">Available Donors</span>
+  </div>
+  <div class="kpi-card kpi-card--blue">
+    <span class="kpi-card__value">{{ kpi.verified_donors or 0 }}</span>
+    <span class="kpi-card__label">Verified Donors</span>
+  </div>
+  <div class="kpi-card kpi-card--orange">
+    <span class="kpi-card__value">{{ kpi.total_requests or 0 }}</span>
+    <span class="kpi-card__label">Total Requests</span>
+  </div>
+  <div class="kpi-card kpi-card--yellow">
+    <span class="kpi-card__value">{{ kpi.pending_requests or 0 }}</span>
+    <span class="kpi-card__label">Pending Requests</span>
+  </div>
+  <div class="kpi-card kpi-card--teal">
+    <span class="kpi-card__value">{{ kpi.fulfilled_requests or 0 }}</span>
+    <span class="kpi-card__label">Fulfilled Requests</span>
+  </div>
+  <div class="kpi-card kpi-card--purple">
+    <span class="kpi-card__value">{{ kpi.survey_count or 0 }}</span>
+    <span class="kpi-card__label">Survey Responses</span>
+  </div>
+  <div class="kpi-card kpi-card--gold">
+    <span class="kpi-card__value">{{ kpi.avg_rating or '—' }}</span>
+    <span class="kpi-card__label">Avg. Feedback Rating</span>
+  </div>
+</div>
+
+<!-- Charts -->
+<div class="chart-grid">
+  <div class="chart-card">
+    <h3 class="chart-card__title">Donors by Blood Group</h3>
+    <canvas id="chartDonorsBg" height="220"></canvas>
+  </div>
+  <div class="chart-card">
+    <h3 class="chart-card__title">Requests by Status</h3>
+    <canvas id="chartReqStatus" height="220"></canvas>
+  </div>
+  <div class="chart-card chart-card--wide">
+    <h3 class="chart-card__title">Monthly Donor Registrations</h3>
+    <canvas id="chartMonthly" height="160"></canvas>
+  </div>
+  <div class="chart-card">
+    <h3 class="chart-card__title">Requests by Blood Group</h3>
+    <canvas id="chartReqBg" height="220"></canvas>
+  </div>
+  <div class="chart-card">
+    <h3 class="chart-card__title">Donors by City</h3>
+    <canvas id="chartCities" height="220"></canvas>
+  </div>
+  <div class="chart-card">
+    <h3 class="chart-card__title">Survey: Biggest Barriers</h3>
+    <canvas id="chartBarriers" height="220"></canvas>
+  </div>
+</div>
+
+<!-- Recent Requests -->
+<section class="admin-table-section">
+  <h2 class="admin-section-title">Recent Blood Requests</h2>
+  <div class="table-wrapper">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Patient</th><th>Blood Group</th><th>Units</th><th>Hospital</th>
+          <th>City</th><th>Urgency</th><th>Status</th><th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for req in recent_requests %}
+        <tr>
+          <td>{{ req.patient_name }}</td>
+          <td><span class="blood-badge blood-badge--sm">{{ req.blood_group }}</span></td>
+          <td>{{ req.units_required }}</td>
+          <td>{{ req.hospital_name }}</td>
+          <td>{{ req.city }}</td>
+          <td><span class="badge badge--urgency-{{ req.urgency | lower }}">{{ req.urgency }}</span></td>
+          <td><span class="badge badge--status-{{ req.status | lower | replace(' ','-') }}">{{ req.status }}</span></td>
+          <td class="mono">{{ req.created_at.strftime('%d %b %Y') if req.created_at }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="8" class="table-empty">No requests yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <a href="{{ url_for('admin_requests') }}" class="btn btn--sm btn--outline">View All Requests →</a>
+</section>
+
+<!-- Recent Donors -->
+<section class="admin-table-section">
+  <h2 class="admin-section-title">Recent Donor Registrations</h2>
+  <div class="table-wrapper">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Name</th><th>Blood Group</th><th>Age</th><th>City</th>
+          <th>Available</th><th>Verified</th><th>Registered</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for d in recent_donors %}
+        <tr>
+          <td>{{ d.full_name }}</td>
+          <td><span class="blood-badge blood-badge--sm">{{ d.blood_group }}</span></td>
+          <td>{{ d.age }}</td>
+          <td>{{ d.city }}</td>
+          <td>{{ '✓' if d.is_available else '✗' }}</td>
+          <td>{{ '✓' if d.is_verified else '—' }}</td>
+          <td class="mono">{{ d.registered_at.strftime('%d %b %Y') if d.registered_at }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7" class="table-empty">No donors yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <a href="{{ url_for('admin_donors') }}" class="btn btn--sm btn--outline">View All Donors →</a>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const PRIMARY  = '#A61B29';
+const BLUE     = '#2F6690';
+const COLORS   = ['#A61B29','#2F6690','#e8a838','#27ae60','#8e44ad','#16a085','#e67e22','#2980b9'];
+
+async function loadCharts() {
+  const res  = await fetch('{{ url_for("admin_analytics") }}');
+  const data = await res.json();
+
+  // 1. Donors by blood group (bar)
+  new Chart(document.getElementById('chartDonorsBg'), {
+    type: 'bar',
+    data: { labels: data.donors_by_bg.labels, datasets: [{ label: 'Donors', data: data.donors_by_bg.data, backgroundColor: PRIMARY, borderRadius: 4 }] },
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+  });
+
+  // 2. Requests by status (doughnut)
+  new Chart(document.getElementById('chartReqStatus'), {
+    type: 'doughnut',
+    data: { labels: data.requests_by_status.labels, datasets: [{ data: data.requests_by_status.data, backgroundColor: COLORS }] },
+    options: { plugins: { legend: { position: 'bottom' } } }
+  });
+
+  // 3. Monthly registrations (line)
+  new Chart(document.getElementById('chartMonthly'), {
+    type: 'line',
+    data: { labels: data.monthly_reg.labels, datasets: [{ label: 'Registrations', data: data.monthly_reg.data, borderColor: PRIMARY, backgroundColor: 'rgba(166,27,41,0.1)', tension: 0.3, fill: true, pointRadius: 4 }] },
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+  });
+
+  // 4. Requests by blood group (bar)
+  new Chart(document.getElementById('chartReqBg'), {
+    type: 'bar',
+    data: { labels: data.requests_by_bg.labels, datasets: [{ label: 'Requests', data: data.requests_by_bg.data, backgroundColor: BLUE, borderRadius: 4 }] },
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+  });
+
+  // 5. Donors by city (horizontal bar)
+  new Chart(document.getElementById('chartCities'), {
+    type: 'bar',
+    data: { labels: data.donors_by_city.labels, datasets: [{ label: 'Donors', data: data.donors_by_city.data, backgroundColor: '#27ae60', borderRadius: 4 }] },
+    options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { precision: 0 } } } }
+  });
+
+  // 6. Survey barriers (pie)
+  new Chart(document.getElementById('chartBarriers'), {
+    type: 'pie',
+    data: { labels: data.survey_barriers.labels, datasets: [{ data: data.survey_barriers.data, backgroundColor: COLORS }] },
+    options: { plugins: { legend: { position: 'bottom' } } }
+  });
+}
+
+loadCharts();
+</script>
+{% endblock %}

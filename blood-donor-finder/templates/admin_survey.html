@@ -1,0 +1,62 @@
+{% extends "admin_base.html" %}
+{% block title %}Survey Responses – LifeLine Admin{% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+  <h1 class="admin-page-title">Survey Responses</h1>
+  <p class="admin-page-sub">{{ responses|length }} response{{ 's' if responses|length != 1 }} collected</p>
+</div>
+
+<div class="table-wrapper">
+  <table class="admin-table admin-table--survey">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Age Group</th>
+        <th>Area</th>
+        <th>Donated Before</th>
+        <th>Willing</th>
+        <th>Knows BG</th>
+        <th>Awareness</th>
+        <th>Barrier</th>
+        <th>Suggestions</th>
+        <th>Submitted</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in responses %}
+      <tr>
+        <td class="mono">{{ r.id }}</td>
+        <td>{{ r.respondent_name or '<em>Anonymous</em>' | safe }}</td>
+        <td>{{ r.age_group }}</td>
+        <td>{{ r.area }}</td>
+        <td>
+          {% if r.donated_before == 'Yes' %}
+            <span class="badge badge--success">Yes</span>
+          {% else %}
+            <span class="badge badge--neutral">No</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if r.willing_to_donate == 'Yes' %}
+            <span class="badge badge--success">Yes</span>
+          {% elif r.willing_to_donate == 'Maybe' %}
+            <span class="badge badge--warning">Maybe</span>
+          {% else %}
+            <span class="badge badge--neutral">No</span>
+          {% endif %}
+        </td>
+        <td>{{ r.knows_blood_group }}</td>
+        <td>{{ r.awareness_source }}</td>
+        <td>{{ r.biggest_barrier }}</td>
+        <td class="notes-cell">{{ r.suggestions or '—' }}</td>
+        <td class="mono">{{ r.submitted_at.strftime('%d %b %Y') if r.submitted_at }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="11" class="table-empty">No survey responses yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}About LifeLine{% endblock %}
+
+{% block content %}
+<section class="page-hero page-hero--sm">
+  <div class="container">
+    <p class="eyebrow">Our Mission</p>
+    <h1 class="page-hero__title">About LifeLine</h1>
+    <p class="page-hero__sub">A SPPU SE AI&DS Community Engagement Project connecting blood donors with patients.</p>
+  </div>
+</section>
+
+<div class="container section">
+  <div class="about-layout">
+
+    <section class="about-section">
+      <h2>What is LifeLine?</h2>
+      <p>LifeLine is a community-built web platform developed as part of the SPPU SE AI&DS Community Engagement
+         Project (CEP). It connects voluntary blood donors with patients and families seeking blood donations
+         across Pune and surrounding areas.</p>
+      <p>The platform provides a searchable, privacy-first directory of registered donors, a blood request
+         submission form, community awareness campaigns, and an interactive survey to understand barriers to
+         blood donation in the local community.</p>
+    </section>
+
+    <section class="about-section">
+      <h2>What LifeLine Does</h2>
+      <ul class="about-list">
+        <li>Maintains a voluntary registry of blood donors with blood group, location, and availability.</li>
+        <li>Allows patients and families to find compatible donors in their city.</li>
+        <li>Accepts blood requests and shows matching donors.</li>
+        <li>Lists awareness and donation camps organised in partnership with blood banks.</li>
+        <li>Collects community survey data to understand donation barriers.</li>
+        <li>Gathers feedback to continuously improve the platform.</li>
+      </ul>
+    </section>
+
+    <section class="about-section about-section--warning">
+      <h2>What LifeLine Does NOT Do</h2>
+      <ul class="about-list about-list--warning">
+        <li><strong>Does not perform medical screening</strong> of donors or recipients.</li>
+        <li><strong>Does not determine blood compatibility</strong> — that is a clinical function.</li>
+        <li><strong>Does not replace licensed blood banks</strong> or hospital transfusion services.</li>
+        <li><strong>Does not administer, collect, store, or transport blood</strong> in any form.</li>
+        <li><strong>Does not provide medical advice, diagnosis, or treatment</strong> recommendations.</li>
+        <li>The "compatible blood groups" filter is a <em>general reference only</em> and must never be
+            used as a substitute for professional compatibility testing.</li>
+      </ul>
+    </section>
+
+    <section class="about-section">
+      <h2>Privacy Approach</h2>
+      <ul class="about-list">
+        <li>Donors provide <strong>explicit, voluntary consent</strong> before registration.</li>
+        <li>Phone numbers and emails are <strong>masked publicly</strong> (e.g. 98XXXXXX10).</li>
+        <li>Full contact details are accessible only to the platform administrator.</li>
+        <li>Donors may request removal of their data at any time by contacting the admin.</li>
+        <li>All database queries use parameterised statements to prevent SQL injection.</li>
+        <li>Admin passwords are stored as secure Werkzeug hashes — never plain text.</li>
+      </ul>
+    </section>
+
+    <section class="about-section">
+      <h2>Who Built This?</h2>
+      <p>LifeLine was designed and built by SE AI&DS students at Savitribai Phule Pune University (SPPU)
+         as a Community Engagement Project under the guidance of faculty mentors and in consultation with
+         local blood banks and the Indian Red Cross Society.</p>
+      <p>The project involved community surveys, stakeholder consultations, and awareness campaigns to
+         ensure the platform addresses real needs in the community.</p>
+    </section>
+
+    <section class="about-section">
+      <h2>Disclaimer</h2>
+      <div class="disclaimer-box">
+        <p>LifeLine is a <strong>community connection platform only</strong>. All donation and transfusion
+           decisions must be confirmed by authorised healthcare professionals and licensed blood banks.
+           Always consult a qualified medical professional before donating blood or accepting a blood
+           transfusion. Blood compatibility and donor eligibility assessments are purely clinical
+           responsibilities and cannot be delegated to this platform.</p>
+      </div>
+    </section>
+
+  </div>
+</div>
+{% endblock %}

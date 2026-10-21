@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Feedback – LifeLine{% endblock %}
+
+{% block content %}
+<section class="page-hero page-hero--sm">
+  <div class="container">
+    <p class="eyebrow">Share Your Experience</p>
+    <h1 class="page-hero__title">Feedback</h1>
+    <p class="page-hero__sub">Your feedback helps us improve LifeLine for the entire community.</p>
+  </div>
+</section>
+
+<div class="container section">
+  <div class="form-wrapper form-wrapper--sm">
+
+    {% if errors %}
+    <div class="error-box" role="alert">
+      <strong>Please fix the following:</strong>
+      <ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul>
+    </div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('feedback') }}" novalidate>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="name">Your Name <span class="optional">(optional)</span></label>
+          <input class="form-input" type="text" id="name" name="name"
+                 value="{{ form.get('name','') }}" placeholder="Leave blank to stay anonymous"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="email">Email <span class="optional">(optional)</span></label>
+          <input class="form-input" type="email" id="email" name="email"
+                 value="{{ form.get('email','') }}" placeholder="For follow-up (optional)"/>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="role">Your Role <span class="required">*</span></label>
+          <select class="form-select" id="role" name="role" required>
+            <option value="">— Select —</option>
+            {% for r in ['Donor','Requester','Volunteer','Public'] %}
+            <option value="{{ r }}" {{ 'selected' if form.get('role')==r }}>{{ r }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Rating <span class="required">*</span></label>
+          <div class="star-rating" role="group" aria-label="Rating 1 to 5 stars">
+            {% for i in range(5, 0, -1) %}
+            <input type="radio" class="star-radio" id="star{{ i }}" name="rating" value="{{ i }}"
+                   {{ 'checked' if form.get('rating','')|string == i|string }}/>
+            <label class="star-label" for="star{{ i }}" title="{{ i }} star{{ 's' if i != 1 }}">★</label>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="message">Your Message <span class="required">*</span></label>
+        <textarea class="form-textarea" id="message" name="message" rows="5" required
+                  placeholder="Tell us about your experience with LifeLine…">{{ form.get('message','') }}</textarea>
+      </div>
+
+      <button type="submit" class="btn btn--primary btn--lg btn--full">Submit Feedback</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

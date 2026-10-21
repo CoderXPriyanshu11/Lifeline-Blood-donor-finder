@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Community Survey – LifeLine{% endblock %}
+
+{% block content %}
+<section class="page-hero page-hero--sm">
+  <div class="container">
+    <p class="eyebrow">Your Voice Matters</p>
+    <h1 class="page-hero__title">Community Survey</h1>
+    <p class="page-hero__sub">Help us understand blood donation awareness and barriers in your community. Takes about 3 minutes. Your name is optional.</p>
+  </div>
+</section>
+
+<div class="container section">
+  <div class="form-wrapper">
+
+    {% if errors %}
+    <div class="error-box" role="alert">
+      <strong>Please fix the following:</strong>
+      <ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul>
+    </div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('survey') }}" novalidate>
+
+      <fieldset class="form-section">
+        <legend class="form-section__title">About You <span class="optional">(anonymous if preferred)</span></legend>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="respondent_name">Your Name <span class="optional">(optional)</span></label>
+            <input class="form-input" type="text" id="respondent_name" name="respondent_name"
+                   value="{{ form.get('respondent_name','') }}" placeholder="Leave blank to stay anonymous"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="age_group">Age Group <span class="required">*</span></label>
+            <select class="form-select" id="age_group" name="age_group" required>
+              <option value="">— Select —</option>
+              {% for ag in ['Under 18','18-25','26-35','36-45','46-60','60+'] %}
+              <option value="{{ ag }}" {{ 'selected' if form.get('age_group')==ag }}>{{ ag }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="area">Your Area / Locality <span class="required">*</span></label>
+          <input class="form-input" type="text" id="area" name="area"
+                 value="{{ form.get('area','') }}" required placeholder="e.g. Kothrud, Pune"/>
+        </div>
+      </fieldset>
+
+      <fieldset class="form-section">
+        <legend class="form-section__title">Blood Donation Experience</legend>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="donated_before">Have you ever donated blood? <span class="required">*</span></label>
+            <select class="form-select" id="donated_before" name="donated_before" required>
+              <option value="">— Select —</option>
+              <option value="Yes" {{ 'selected' if form.get('donated_before')=='Yes' }}>Yes</option>
+              <option value="No" {{ 'selected' if form.get('donated_before')=='No' }}>No</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="willing_to_donate">Are you willing to donate blood? <span class="required">*</span></label>
+            <select class="form-select" id="willing_to_donate" name="willing_to_donate" required>
+              <option value="">— Select —</option>
+              <option value="Yes"   {{ 'selected' if form.get('willing_to_donate')=='Yes' }}>Yes</option>
+              <option value="No"    {{ 'selected' if form.get('willing_to_donate')=='No' }}>No</option>
+              <option value="Maybe" {{ 'selected' if form.get('willing_to_donate')=='Maybe' }}>Maybe</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="knows_blood_group">Do you know your blood group? <span class="required">*</span></label>
+            <select class="form-select" id="knows_blood_group" name="knows_blood_group" required>
+              <option value="">— Select —</option>
+              <option value="Yes" {{ 'selected' if form.get('knows_blood_group')=='Yes' }}>Yes</option>
+              <option value="No"  {{ 'selected' if form.get('knows_blood_group')=='No' }}>No</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="awareness_source">How did you learn about blood donation? <span class="required">*</span></label>
+            <select class="form-select" id="awareness_source" name="awareness_source" required>
+              <option value="">— Select —</option>
+              {% for s in ['Social Media','Friends/Family','Hospital','NGO','College','Other'] %}
+              <option value="{{ s }}" {{ 'selected' if form.get('awareness_source')==s }}>{{ s }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="form-section">
+        <legend class="form-section__title">Barriers &amp; Suggestions</legend>
+        <div class="form-group">
+          <label class="form-label" for="biggest_barrier">Biggest barrier to donating blood? <span class="required">*</span></label>
+          <select class="form-select" id="biggest_barrier" name="biggest_barrier" required>
+            <option value="">— Select —</option>
+            {% for b in ['Fear of Needles','Lack of Time','Lack of Awareness','Health Concerns','No Nearby Camp','Other'] %}
+            <option value="{{ b }}" {{ 'selected' if form.get('biggest_barrier')==b }}>{{ b }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="suggestions">Any suggestions to improve blood donation in your community? <span class="optional">(optional)</span></label>
+          <textarea class="form-textarea" id="suggestions" name="suggestions" rows="3"
+                    placeholder="Your ideas help shape future campaigns and features.">{{ form.get('suggestions','') }}</textarea>
+        </div>
+      </fieldset>
+
+      <button type="submit" class="btn btn--primary btn--lg btn--full">Submit Survey</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

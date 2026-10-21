@@ -1,0 +1,86 @@
+{% extends "admin_base.html" %}
+{% block title %}Stakeholders – LifeLine Admin{% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+  <h1 class="admin-page-title">Stakeholder Interaction Log</h1>
+  <p class="admin-page-sub">Track key stakeholder engagements and decisions.</p>
+</div>
+
+<!-- Add Form -->
+<section class="admin-form-section">
+  <h2 class="admin-section-title">Add Stakeholder Interaction</h2>
+  {% if errors %}
+  <div class="error-box" role="alert">
+    <ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul>
+  </div>
+  {% endif %}
+  <form method="POST" action="{{ url_for('admin_stakeholders') }}" class="admin-add-form">
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" for="name">Stakeholder Name <span class="required">*</span></label>
+        <input class="form-input" type="text" id="name" name="name" required placeholder="Dr Anjali Rane"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="organization">Organization <span class="required">*</span></label>
+        <input class="form-input" type="text" id="organization" name="organization" required placeholder="Janwadi Blood Bank"/>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" for="role">Role <span class="required">*</span></label>
+        <input class="form-input" type="text" id="role" name="role" required placeholder="Medical Officer"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="contact">Contact</label>
+        <input class="form-input" type="text" id="contact" name="contact" placeholder="email or phone"/>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" for="interaction_date">Interaction Date <span class="required">*</span></label>
+        <input class="form-input" type="date" id="interaction_date" name="interaction_date" required/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="interaction_notes">Interaction Notes</label>
+      <textarea class="form-textarea" id="interaction_notes" name="interaction_notes" rows="3"
+                placeholder="Key topics, decisions influenced, outcomes…"></textarea>
+    </div>
+    <button type="submit" class="btn btn--primary">Add Stakeholder</button>
+  </form>
+</section>
+
+<!-- List -->
+<section class="admin-table-section">
+  <h2 class="admin-section-title">All Stakeholders</h2>
+  <div class="table-wrapper">
+    <table class="admin-table">
+      <thead>
+        <tr><th>#</th><th>Name</th><th>Organization</th><th>Role</th><th>Contact</th><th>Date</th><th>Notes</th><th>Action</th></tr>
+      </thead>
+      <tbody>
+        {% for s in stakeholders %}
+        <tr>
+          <td class="mono">{{ s.id }}</td>
+          <td>{{ s.name }}</td>
+          <td>{{ s.organization }}</td>
+          <td>{{ s.role }}</td>
+          <td>{{ s.contact or '—' }}</td>
+          <td class="mono">{{ s.interaction_date.strftime('%d %b %Y') if s.interaction_date }}</td>
+          <td class="notes-cell">{{ s.interaction_notes or '—' }}</td>
+          <td>
+            <form method="POST" action="{{ url_for('admin_delete_stakeholder', stk_id=s.id) }}" class="inline-form"
+                  data-confirm="Delete stakeholder '{{ s.name }}'?">
+              <button type="submit" class="btn btn--danger btn--sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="8" class="table-empty">No stakeholders recorded.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

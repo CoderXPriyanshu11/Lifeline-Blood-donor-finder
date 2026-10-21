@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block title %}Find Donors – LifeLine{% endblock %}
+
+{% block content %}
+<section class="page-hero page-hero--sm">
+  <div class="container">
+    <p class="eyebrow">Donor Directory</p>
+    <h1 class="page-hero__title">Find Blood Donors</h1>
+    <p class="page-hero__sub">Search by blood group and location. Contact details are masked to protect donor privacy.</p>
+  </div>
+</section>
+
+<div class="container section">
+
+  <!-- Search Form -->
+  <form method="GET" action="{{ url_for('search') }}" class="search-form card" role="search">
+    <div class="search-form__grid">
+      <div class="form-group">
+        <label class="form-label" for="blood_group">Blood Group</label>
+        <select class="form-select" id="blood_group" name="blood_group">
+          <option value="">— Any —</option>
+          {% for bg in blood_groups %}
+          <option value="{{ bg }}" {{ 'selected' if q_bg==bg }}>{{ bg }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="city">City</label>
+        <input class="form-input" type="text" id="city" name="city"
+               value="{{ q_city }}" placeholder="e.g. Pune"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="area">Area</label>
+        <input class="form-input" type="text" id="area" name="area"
+               value="{{ q_area }}" placeholder="e.g. Kothrud"/>
+      </div>
+      <div class="form-group form-group--center">
+        <label class="form-checkbox-label">
+          <input type="checkbox" name="avail_only" value="1" class="form-checkbox"
+                 {{ 'checked' if q_avail=='1' }}/>
+          <span>Available donors only</span>
+        </label>
+      </div>
+      <div class="form-group form-group--center">
+        <label class="form-checkbox-label">
+          <input type="checkbox" name="compatible" value="1" class="form-checkbox"
+                 {{ 'checked' if q_compat=='1' }}/>
+          <span>Include compatible groups</span>
+        </label>
+        <span class="form-hint">General reference only — not a medical determination.</span>
+      </div>
+    </div>
+    <button type="submit" class="btn btn--primary">Search Donors</button>
+  </form>
+
+  <!-- Compatibility note if used -->
+  {% if q_compat=='1' and q_bg %}
+  <div class="notice notice--info">
+    <strong>Compatibility mode active</strong> for blood group <strong>{{ q_bg }}</strong>.
+    Results include compatible donor groups as a general reference. Always verify compatibility
+    with a qualified medical professional before proceeding.
+  </div>
+  {% endif %}
+
+  <!-- Privacy note -->
+  <div class="notice notice--info notice--sm">
+    🔒 Contact details are masked to protect donor privacy. For full details, contact the LifeLine administrator.
+  </div>
+
+  <!-- Results -->
+  {% if donors is not none %}
+    {% if donors|length == 0 %}
+    <div class="empty-state">
+      <p class="empty-state__icon" aria-hidden="true">🔍</p>
+      <h2 class="empty-state__title">No donors found</h2>
+      <p>Try broadening your search — different area, compatible groups, or all availability.</p>
+      <div class="empty-state__actions">
+        <a href="{{ url_for('register') }}" class="btn btn--primary">Register as a Donor</a>
+        <a href="{{ url_for('request_blood') }}" class="btn btn--outline">Submit a Request</a>
+      </div>
+    </div>
+    {% else %}
+    <p class="results-count"><strong>{{ donors|length }}</strong> donor{{ 's' if donors|length != 1 }} found</p>
+    <div class="donor-grid">
+      {% for donor in donors %}
+      <article class="donor-card">
+        <div class="donor-card__head">
+          <span class="blood-badge">{{ donor.blood_group }}</span>
+          <div class="donor-card__badges">
+            {% if donor.is_verified %}
+            <span class="badge badge--success" title="Identity verified by admin">✓ Verified</span>
+            {% endif %}
+            {% if donor.is_available %}
+            <span class="badge badge--available">● Available</span>
+            {% else %}
+            <span class="badge badge--unavailable">Unavailable</span>
+            {% endif %}
+          </div>
+        </div>
+        <h3 class="donor-card__name">{{ donor.full_name }}</h3>
+        <ul class="donor-card__details">
+          <li>
+            <span class="detail-icon" aria-hidden="true">📍</span>
+            <span>{{ donor.area }}, {{ donor.city }}</span>
+          </li>
+          <li>
+            <span class="detail-icon" aria-hidden="true">📞</span>
+            <code class="detail-masked" title="Contact masked for privacy">{{ donor.phone | mask_phone }}</code>
+          </li>
+          {% if donor.email %}
+          <li>
+            <span class="detail-icon" aria-hidden="true">✉</span>
+            <code class="detail-masked" title="Email masked for privacy">{{ donor.email | mask_email }}</code>
+          </li>
+          {% endif %}
+          {% if donor.last_donation_date %}
+          <li>
+            <span class="detail-icon" aria-hidden="true">🗓</span>
+            <span>Last donated: {{ donor.last_donation_date.strftime('%d %b %Y') if donor.last_donation_date }}</span>
+          </li>
+          {% endif %}
+        </ul>
+        <p class="donor-card__privacy-note">
+          Full contact details available via admin. Contact your local blood bank to connect.
+        </p>
+      </article>
+      {% endfor %}
+    </div>
+    {% endif %}
+  {% endif %}
+
+</div>
+{% endblock %}

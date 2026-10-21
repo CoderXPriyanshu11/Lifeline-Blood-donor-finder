@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Admin – LifeLine{% endblock %}</title>
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M16 2 C16 2 4 14 4 20 a12 12 0 0 0 24 0 C28 14 16 2 16 2z' fill='%23A61B29'/></svg>"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+  {% block head_extra %}{% endblock %}
+</head>
+<body class="admin-body">
+
+  <!-- ── Admin Top Bar ── -->
+  <header class="admin-header">
+    <div class="admin-header__inner">
+      <a class="admin-header__brand" href="{{ url_for('admin_dashboard') }}">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true" width="22" height="22">
+          <path d="M16 2 C16 2 4 14 4 20 a12 12 0 0 0 24 0 C28 14 16 2 16 2z" fill="currentColor"/>
+        </svg>
+        LifeLine <span class="admin-header__label">Admin</span>
+      </a>
+      <div class="admin-header__user">
+        <span>{{ session.get('admin_name', 'Admin') }}</span>
+        <a href="{{ url_for('admin_logout') }}" class="btn btn--sm btn--outline-light">Logout</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="admin-layout">
+    <!-- ── Sidebar ── -->
+    <aside class="admin-sidebar">
+      <nav aria-label="Admin navigation">
+        <ul class="admin-nav" role="list">
+          <li>
+            <a href="{{ url_for('admin_dashboard') }}"
+               class="admin-nav__link {% if request.endpoint=='admin_dashboard' %}admin-nav__link--active{% endif %}">
+              <span class="admin-nav__icon" aria-hidden="true">📊</span> Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('admin_donors') }}"
+               class="admin-nav__link {% if request.endpoint=='admin_donors' %}admin-nav__link--active{% endif %}">
+              <span class="admin-nav__icon" aria-hidden="true">🩸</span> Donors
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('admin_requests') }}"
+               class="admin-nav__link {% if request.endpoint=='admin_requests' %}admin-nav__link--active{% endif %}">
+              <span class="admin-nav__icon" aria-hidden="true">📋</span> Requests
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('admin_campaigns') }}"
+               class="admin-nav__link {% if request.endpoint=='admin_campaigns' %}admin-nav__link--active{% endif %}">
+              <span class="admin-nav__icon" aria-hidden="true">📅</span> Campaigns
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('admin_stakeholders') }}"
+               class="admin-nav__link {% if request.endpoint=='admin_stakeholders' %}admin-nav__link--active{% endif %}">
+              <span class="admin-nav__icon" aria-hidden="true">🤝</span> Stakeholders
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('admin_survey') }}"
+               class="admin-nav__link {% if request.endpoint=='admin_survey' %}admin-nav__link--active{% endif %}">
+              <span class="admin-nav__icon" aria-hidden="true">📝</span> Survey
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('admin_feedback') }}"
+               class="admin-nav__link {% if request.endpoint=='admin_feedback' %}admin-nav__link--active{% endif %}">
+              <span class="admin-nav__icon" aria-hidden="true">⭐</span> Feedback
+            </a>
+          </li>
+          <li class="admin-nav__divider"></li>
+          <li>
+            <a href="{{ url_for('index') }}" class="admin-nav__link" target="_blank">
+              <span class="admin-nav__icon" aria-hidden="true">🌐</span> View Site
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- ── Admin Main ── -->
+    <main class="admin-main" id="admin-content">
+      <!-- Flash messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div role="alert" aria-live="polite">
+            {% for category, message in messages %}
+              <div class="flash flash--{{ category }}">
+                <span>{{ message }}</span>
+                <button class="flash__close" aria-label="Dismiss">&times;</button>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

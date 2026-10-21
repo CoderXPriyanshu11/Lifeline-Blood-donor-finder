@@ -1,0 +1,91 @@
+{% extends "admin_base.html" %}
+{% block title %}Donors – LifeLine Admin{% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+  <h1 class="admin-page-title">Donor Management</h1>
+  <p class="admin-page-sub">{{ donors|length }} record{{ 's' if donors|length != 1 }} shown</p>
+</div>
+
+<!-- Search & Filter -->
+<form method="GET" action="{{ url_for('admin_donors') }}" class="admin-filter-form">
+  <input class="form-input" type="search" name="q" value="{{ q }}" placeholder="Search name, phone, city, area…"/>
+  <select class="form-select" name="blood_group">
+    <option value="">All Blood Groups</option>
+    {% for bg in blood_groups %}
+    <option value="{{ bg }}" {{ 'selected' if filter_bg==bg }}>{{ bg }}</option>
+    {% endfor %}
+  </select>
+  <select class="form-select" name="avail">
+    <option value="">All Availability</option>
+    <option value="1" {{ 'selected' if filter_avail=='1' }}>Available</option>
+    <option value="0" {{ 'selected' if filter_avail=='0' }}>Unavailable</option>
+  </select>
+  <button type="submit" class="btn btn--primary btn--sm">Filter</button>
+  <a href="{{ url_for('admin_donors') }}" class="btn btn--outline btn--sm">Reset</a>
+</form>
+
+<div class="table-wrapper">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Blood Group</th>
+        <th>Age / Gender</th>
+        <th>Phone</th>
+        <th>Area, City</th>
+        <th>Available</th>
+        <th>Verified</th>
+        <th>Last Donated</th>
+        <th>Registered</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for d in donors %}
+      <tr>
+        <td class="mono">{{ d.id }}</td>
+        <td>{{ d.full_name }}</td>
+        <td><span class="blood-badge blood-badge--sm">{{ d.blood_group }}</span></td>
+        <td>{{ d.age }} / {{ d.gender }}</td>
+        <td class="mono">{{ d.phone }}</td>
+        <td>{{ d.area }}, {{ d.city }}</td>
+        <td>
+          <form method="POST" action="{{ url_for('admin_toggle_available', donor_id=d.id) }}" class="inline-form">
+            <input type="hidden" name="q" value="{{ q }}"/>
+            <input type="hidden" name="blood_group" value="{{ filter_bg }}"/>
+            <input type="hidden" name="avail" value="{{ filter_avail }}"/>
+            <button type="submit" class="toggle-btn {{ 'toggle-btn--on' if d.is_available else 'toggle-btn--off' }}"
+                    title="Toggle availability">
+              {{ '● Yes' if d.is_available else '○ No' }}
+            </button>
+          </form>
+        </td>
+        <td>
+          <form method="POST" action="{{ url_for('admin_toggle_verified', donor_id=d.id) }}" class="inline-form">
+            <input type="hidden" name="q" value="{{ q }}"/>
+            <input type="hidden" name="blood_group" value="{{ filter_bg }}"/>
+            <input type="hidden" name="avail" value="{{ filter_avail }}"/>
+            <button type="submit" class="toggle-btn {{ 'toggle-btn--verified' if d.is_verified else 'toggle-btn--off' }}"
+                    title="Toggle verification">
+              {{ '✓ Verified' if d.is_verified else '— Unverified' }}
+            </button>
+          </form>
+        </td>
+        <td class="mono">{{ d.last_donation_date.strftime('%d %b %Y') if d.last_donation_date else '—' }}</td>
+        <td class="mono">{{ d.registered_at.strftime('%d %b %Y') if d.registered_at }}</td>
+        <td>
+          <form method="POST" action="{{ url_for('admin_delete_donor', donor_id=d.id) }}" class="inline-form"
+                data-confirm="Delete donor '{{ d.full_name }}'? This cannot be undone.">
+            <button type="submit" class="btn btn--danger btn--sm">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="11" class="table-empty">No donors found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

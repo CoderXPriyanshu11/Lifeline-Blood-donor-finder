@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% block title %}LifeLine – Connecting Blood Donors with Those in Need{% endblock %}
+
+{% block content %}
+
+<!-- ── Hero ── -->
+<section class="hero">
+  <div class="container hero__inner">
+    <div class="hero__text">
+      <p class="eyebrow">Community · Care · Connection</p>
+      <h1 class="hero__headline">Every Drop<br><em>Counts.</em></h1>
+      <p class="hero__sub">
+        LifeLine connects voluntary blood donors with patients across your city —
+        fast, safely, and with full respect for your privacy.
+      </p>
+      <div class="hero__actions">
+        <a href="{{ url_for('register') }}" class="btn btn--primary btn--lg">Become a Donor</a>
+        <a href="{{ url_for('request_blood') }}" class="btn btn--outline btn--lg">Request Blood</a>
+      </div>
+    </div>
+    <div class="hero__visual" aria-hidden="true">
+      <!-- Heartbeat pulse line SVG -->
+      <svg class="pulse-line" viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+        <polyline class="pulse-line__path"
+          points="0,60 60,60 80,60 90,15 100,105 110,60 140,60 160,60 175,30 185,90 195,60 250,60 400,60"
+          fill="none" stroke="#A61B29" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <svg class="hero__drop" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 160" aria-label="Blood drop">
+        <defs>
+          <radialGradient id="dropGrad" cx="40%" cy="35%">
+            <stop offset="0%" stop-color="#d63051"/>
+            <stop offset="100%" stop-color="#A61B29"/>
+          </radialGradient>
+        </defs>
+        <path d="M60 10 C60 10 10 70 10 100 a50 50 0 0 0 100 0 C110 70 60 10 60 10z"
+              fill="url(#dropGrad)" opacity="0.92"/>
+        <ellipse cx="44" cy="80" rx="10" ry="16" fill="white" opacity="0.18"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ── Live Stats ── -->
+<section class="stats-band" aria-label="Live statistics">
+  <div class="container stats-band__grid">
+    <div class="stat-card">
+      <span class="stat-card__number">{{ stats.total_donors or 0 }}</span>
+      <span class="stat-card__label">Registered Donors</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__number">{{ stats.available_donors or 0 }}</span>
+      <span class="stat-card__label">Available Now</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__number">{{ stats.total_requests or 0 }}</span>
+      <span class="stat-card__label">Blood Requests</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__number">{{ stats.fulfilled_requests or 0 }}</span>
+      <span class="stat-card__label">Requests Fulfilled</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── How It Works ── -->
+<section class="how-it-works section">
+  <div class="container">
+    <p class="eyebrow text-center">Simple 3-Step Process</p>
+    <h2 class="section__heading text-center">How LifeLine Works</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step__icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="22" stroke="#A61B29" stroke-width="2"/>
+            <path d="M16 24h16M24 16v16" stroke="#A61B29" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="step__num">01</span>
+        <h3 class="step__title">Register as a Donor</h3>
+        <p class="step__desc">Fill out a simple form with your blood group, location, and availability. Your consent is recorded and your contact details are protected.</p>
+      </div>
+      <div class="step">
+        <div class="step__icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="22" stroke="#2F6690" stroke-width="2"/>
+            <circle cx="24" cy="20" r="6" stroke="#2F6690" stroke-width="2"/>
+            <path d="M12 38c0-7 5.4-12 12-12s12 5 12 12" stroke="#2F6690" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="step__num">02</span>
+        <h3 class="step__title">Find or Request</h3>
+        <p class="step__desc">Search available donors by blood group and city, or submit a blood request for a patient. Results show masked contact info to protect privacy.</p>
+      </div>
+      <div class="step">
+        <div class="step__icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="22" stroke="#A61B29" stroke-width="2"/>
+            <path d="M14 24l8 8 12-16" stroke="#A61B29" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="step__num">03</span>
+        <h3 class="step__title">Connect &amp; Donate</h3>
+        <p class="step__desc">Contact your local blood bank or hospital. A qualified healthcare professional handles all eligibility checks, compatibility testing, and the donation process.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Safety Note ── -->
+<section class="safety-note section">
+  <div class="container">
+    <div class="safety-card">
+      <div class="safety-card__icon" aria-hidden="true">🏥</div>
+      <div class="safety-card__body">
+        <p class="eyebrow">Important Safety Notice</p>
+        <h2 class="safety-card__title">LifeLine Connects. Professionals Decide.</h2>
+        <p>LifeLine is a <strong>community connection platform only</strong>. We do not perform medical screenings,
+           eligibility assessments, or blood compatibility testing. All donation and transfusion decisions must be
+           made by qualified healthcare professionals at a licensed blood bank or hospital.
+           The compatibility suggestions on the search page are for <em>general reference only</em> and are
+           not a medical determination.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Upcoming Campaigns ── -->
+{% if upcoming %}
+<section class="section upcoming-camps">
+  <div class="container">
+    <p class="eyebrow">Upcoming Events</p>
+    <h2 class="section__heading">Awareness &amp; Donation Camps</h2>
+    <div class="card-grid">
+      {% for camp in upcoming %}
+      <article class="card">
+        <div class="card__head">
+          <span class="badge badge--info">Upcoming</span>
+          <time class="card__date" datetime="{{ camp.campaign_date }}">
+            {{ camp.campaign_date.strftime('%d %b %Y') if camp.campaign_date else '' }}
+          </time>
+        </div>
+        <h3 class="card__title">{{ camp.title }}</h3>
+        <p class="card__meta">📍 {{ camp.location }}</p>
+        <p class="card__meta">🏢 {{ camp.organizer }}</p>
+        {% if camp.expected_donors %}
+          <p class="card__meta">👥 Expecting {{ camp.expected_donors }} donors</p>
+        {% endif %}
+        {% if camp.description %}
+          <p class="card__body">{{ camp.description[:120] }}{% if camp.description|length > 120 %}…{% endif %}</p>
+        {% endif %}
+      </article>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-2">
+      <a href="{{ url_for('campaigns') }}" class="btn btn--outline">View All Campaigns</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── CTA Band ── -->
+<section class="cta-band">
+  <div class="container cta-band__inner">
+    <div>
+      <h2 class="cta-band__title">Have a spare hour?<br>Save three lives.</h2>
+      <p class="cta-band__sub">One blood donation can save up to three lives. Register today.</p>
+    </div>
+    <div class="cta-band__actions">
+      <a href="{{ url_for('register') }}" class="btn btn--light btn--lg">Donate Blood</a>
+      <a href="{{ url_for('survey') }}" class="btn btn--outline-light btn--lg">Take the Survey</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

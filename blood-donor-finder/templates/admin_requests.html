@@ -1,0 +1,65 @@
+{% extends "admin_base.html" %}
+{% block title %}Blood Requests – LifeLine Admin{% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+  <h1 class="admin-page-title">Blood Request Management</h1>
+  <p class="admin-page-sub">{{ requests|length }} record{{ 's' if requests|length != 1 }}</p>
+</div>
+
+<!-- Filter -->
+<form method="GET" action="{{ url_for('admin_requests') }}" class="admin-filter-form">
+  <select class="form-select" name="status">
+    <option value="">All Statuses</option>
+    {% for s in ['Pending','In Progress','Fulfilled','Cancelled'] %}
+    <option value="{{ s }}" {{ 'selected' if filter_status==s }}>{{ s }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit" class="btn btn--primary btn--sm">Filter</button>
+  <a href="{{ url_for('admin_requests') }}" class="btn btn--outline btn--sm">Reset</a>
+</form>
+
+<div class="table-wrapper">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>#</th><th>Patient</th><th>Blood Group</th><th>Units</th><th>Urgency</th>
+        <th>Hospital</th><th>City</th><th>Contact</th><th>Status</th><th>Date</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for req in requests %}
+      <tr>
+        <td class="mono">{{ req.id }}</td>
+        <td>{{ req.patient_name }}</td>
+        <td><span class="blood-badge blood-badge--sm">{{ req.blood_group }}</span></td>
+        <td>{{ req.units_required }}</td>
+        <td><span class="badge badge--urgency-{{ req.urgency | lower }}">{{ req.urgency }}</span></td>
+        <td>{{ req.hospital_name }}</td>
+        <td>{{ req.city }}</td>
+        <td class="mono">{{ req.contact_phone }}</td>
+        <td>
+          <form method="POST" action="{{ url_for('admin_update_request_status', req_id=req.id) }}" class="inline-form inline-form--select">
+            <select class="form-select form-select--sm" name="status" onchange="this.form.submit()"
+                    aria-label="Change status for request {{ req.id }}">
+              {% for s in ['Pending','In Progress','Fulfilled','Cancelled'] %}
+              <option value="{{ s }}" {{ 'selected' if req.status==s }}>{{ s }}</option>
+              {% endfor %}
+            </select>
+          </form>
+        </td>
+        <td class="mono">{{ req.created_at.strftime('%d %b %Y') if req.created_at }}</td>
+        <td>
+          <form method="POST" action="{{ url_for('admin_delete_request', req_id=req.id) }}" class="inline-form"
+                data-confirm="Delete this blood request? This cannot be undone.">
+            <button type="submit" class="btn btn--danger btn--sm">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="11" class="table-empty">No blood requests found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

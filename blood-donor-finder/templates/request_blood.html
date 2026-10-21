@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Request Blood – LifeLine{% endblock %}
+
+{% block content %}
+<section class="page-hero page-hero--sm page-hero--blue">
+  <div class="container">
+    <p class="eyebrow">Need Blood Urgently?</p>
+    <h1 class="page-hero__title">Submit a Blood Request</h1>
+    <p class="page-hero__sub">Fill in the details below. After submission, you'll be directed to matching donors in your city.</p>
+  </div>
+</section>
+
+<div class="container section">
+  <div class="form-wrapper">
+
+    <div class="notice notice--danger">
+      <strong>Emergency:</strong> If this is a life-threatening emergency, please contact your hospital or dial <strong>112</strong> immediately.
+      LifeLine is a <em>community connection tool</em> and is not a substitute for emergency medical services.
+    </div>
+
+    {% if errors %}
+    <div class="error-box" role="alert">
+      <strong>Please fix the following:</strong>
+      <ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul>
+    </div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('request_blood') }}" novalidate>
+
+      <fieldset class="form-section">
+        <legend class="form-section__title">Patient Information</legend>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="patient_name">Patient Name <span class="required">*</span></label>
+            <input class="form-input" type="text" id="patient_name" name="patient_name"
+                   value="{{ form.get('patient_name','') }}" required placeholder="Full name of the patient"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="blood_group">Blood Group Required <span class="required">*</span></label>
+            <select class="form-select" id="blood_group" name="blood_group" required>
+              <option value="">— Select —</option>
+              {% for bg in blood_groups %}
+              <option value="{{ bg }}" {{ 'selected' if form.get('blood_group')==bg }}>{{ bg }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="units_required">Units Required <span class="required">*</span></label>
+            <input class="form-input" type="number" id="units_required" name="units_required"
+                   value="{{ form.get('units_required','1') }}" min="1" max="20" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="urgency">Urgency <span class="required">*</span></label>
+            <select class="form-select" id="urgency" name="urgency" required>
+              {% for u in ['Normal','Urgent','Critical'] %}
+              <option value="{{ u }}" {{ 'selected' if form.get('urgency','')==u }}>{{ u }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="form-section">
+        <legend class="form-section__title">Hospital &amp; Location</legend>
+        <div class="form-group">
+          <label class="form-label" for="hospital_name">Hospital Name <span class="required">*</span></label>
+          <input class="form-input" type="text" id="hospital_name" name="hospital_name"
+                 value="{{ form.get('hospital_name','') }}" required placeholder="e.g. Sahyadri Hospital"/>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="area">Area / Locality <span class="required">*</span></label>
+            <input class="form-input" type="text" id="area" name="area"
+                   value="{{ form.get('area','') }}" required placeholder="e.g. Karve Road"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="city">City <span class="required">*</span></label>
+            <input class="form-input" type="text" id="city" name="city"
+                   value="{{ form.get('city','') }}" required placeholder="e.g. Pune"/>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="form-section">
+        <legend class="form-section__title">Contact Information</legend>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="contact_name">Your Name <span class="required">*</span></label>
+            <input class="form-input" type="text" id="contact_name" name="contact_name"
+                   value="{{ form.get('contact_name','') }}" required placeholder="Patient's relative / guardian"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="contact_phone">Contact Phone <span class="required">*</span></label>
+            <input class="form-input" type="tel" id="contact_phone" name="contact_phone"
+                   value="{{ form.get('contact_phone','') }}" pattern="\d{10}" maxlength="10" required
+                   placeholder="10-digit mobile number"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="additional_notes">Additional Notes <span class="optional">(optional)</span></label>
+          <textarea class="form-textarea" id="additional_notes" name="additional_notes"
+                    rows="3" placeholder="Any additional information (e.g. specific hospital ward, timing)">{{ form.get('additional_notes','') }}</textarea>
+        </div>
+      </fieldset>
+
+      <button type="submit" class="btn btn--primary btn--lg btn--full">Submit Blood Request &amp; Find Donors</button>
+    </form>
+
+  </div>
+</div>
+{% endblock %}

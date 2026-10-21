@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Thank You – LifeLine{% endblock %}
+
+{% block content %}
+<section class="thank-you-page section">
+  <div class="container">
+    <div class="thank-you-card">
+      <div class="thank-you-card__icon" aria-hidden="true">
+        {% if kind == 'register' %}💉
+        {% elif kind == 'request' %}🏥
+        {% elif kind == 'survey' %}📝
+        {% elif kind == 'feedback' %}⭐
+        {% else %}✅
+        {% endif %}
+      </div>
+
+      <h1 class="thank-you-card__title">
+        {% if kind == 'register' %}You're a LifeLine Donor!
+        {% elif kind == 'request' %}Request Submitted
+        {% elif kind == 'survey' %}Survey Complete
+        {% elif kind == 'feedback' %}Feedback Received
+        {% else %}Thank You!
+        {% endif %}
+      </h1>
+
+      <p class="thank-you-card__msg">
+        {% if kind == 'register' %}
+          Thank you for registering as a blood donor. Your profile is now live in our community directory.
+          A matching requester or blood bank may reach out when your blood group is needed.
+          Remember: actual donation happens at a licensed blood bank with full medical supervision.
+        {% elif kind == 'request' %}
+          Your blood request has been submitted. We're showing you matching donors in your city.
+          Contact your hospital or the listed donors immediately — always go through a licensed blood bank.
+        {% elif kind == 'survey' %}
+          Thank you for completing the community survey! Your responses help us design better awareness
+          campaigns and features that address real barriers.
+        {% elif kind == 'feedback' %}
+          Thank you for your feedback. Every response helps us improve LifeLine for the community.
+        {% else %}
+          Thank you for using LifeLine.
+        {% endif %}
+      </p>
+
+      <div class="thank-you-card__actions">
+        <a href="{{ url_for('index') }}" class="btn btn--primary">Back to Home</a>
+        {% if kind == 'register' %}
+          <a href="{{ url_for('search') }}" class="btn btn--outline">Find Other Donors</a>
+        {% elif kind == 'request' %}
+          <a href="{{ url_for('search') }}" class="btn btn--outline">Search Donors</a>
+        {% else %}
+          <a href="{{ url_for('campaigns') }}" class="btn btn--outline">View Campaigns</a>
+        {% endif %}
+      </div>
+
+      {% if kind == 'register' %}
+      <div class="thank-you-card__reminder notice notice--warning">
+        <strong>Reminder:</strong> LifeLine is a connection tool only. Eligibility for donation,
+        blood compatibility, and the donation process itself must be handled by a qualified
+        healthcare professional at a licensed blood bank.
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}
